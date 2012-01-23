@@ -102,8 +102,8 @@ module Netzke
         #
 
         ## Edit in form specific endpoint
-        def add_form__form_panel0__netzke_submit_endpoint(params)
-          res = component_instance(:add_form__form_panel0).netzke_submit(params)
+        def add_form__netzke_0__netzke_submit_endpoint(params)
+          res = component_instance(:add_form__netzke_0).netzke_submit(params)
 
           if res[:set_form_values]
             # successful creation
@@ -113,8 +113,8 @@ module Netzke
           res.to_nifty_json
         end
 
-        def edit_form__form_panel0__netzke_submit_endpoint(params)
-          res = component_instance(:edit_form__form_panel0).netzke_submit(params)
+        def edit_form__netzke_0__netzke_submit_endpoint(params)
+          res = component_instance(:edit_form__netzke_0).netzke_submit(params)
 
           if res[:set_form_values]
             on_data_changed
@@ -124,7 +124,7 @@ module Netzke
           res.to_nifty_json
         end
 
-        def multi_edit_form__multi_edit_form0__netzke_submit_endpoint(params)
+        def multi_edit_form__netzke_0__netzke_submit_endpoint(params)
           ids = ActiveSupport::JSON.decode(params.delete(:ids))
           data = ids.collect{ |id| ActiveSupport::JSON.decode(params[:data]).merge("id" => id) }
 
