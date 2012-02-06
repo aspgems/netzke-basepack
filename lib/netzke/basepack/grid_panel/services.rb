@@ -203,12 +203,20 @@ module Netzke
             end
 
             # apply sorting if needed
-            if params[:sort] && sort_params = params[:sort].first
-              assoc, method = sort_params["property"].split('__')
-              dir = sort_params["direction"].downcase
+            if sort_params = (params[:sort].try(:first) || config[:default_sort])
+              if sort_params.is_a?(Hash)
+                sort_params = sort_params.with_indifferent_access
+                property    = sort_params["property"]
+                dir         = (sort_params["direction"] || 'asc').downcase
+              else
+                property    = sort_params
+                dir         = 'asc'
+              end
+
+              assoc, method = property.split('__')
 
               # if a sorting scope is set, call the scope with the given direction
-              column = columns.detect { |c| c[:name] == sort_params["property"] }
+              column = columns.detect { |c| c[:name] == property }
               if column.has_key?(:sorting_scope)
                 relation = relation.send(column[:sorting_scope].to_sym, dir.to_sym)
                 ::Rails.logger.debug "!!! relation: #{relation.inspect}\n"
