@@ -85,6 +85,11 @@ module Netzke
         }.merge(overrides)
       end
 
+      def js_component_render
+        # Not applicable: A ViewPort always renders to document body.
+        # http://docs.sencha.com/ext-js/4-0/#!/api/Ext.container.Viewport-cfg-renderTo
+      end
+
       # Html required for Ext.History to work
       def js_component_html
         super << %Q{
