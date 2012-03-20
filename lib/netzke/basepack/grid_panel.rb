@@ -40,6 +40,7 @@ module Netzke
     # * +enable_edit_in_form+ - (defaults to true) provide buttons into the toolbar that activate editing/adding records via a form
     # * +enable_extended_search+ - (defaults to true) provide a button into the toolbar that shows configurable search form
     # * +enable_context_menu+ - (defaults to true) enable rows context menu
+    # * +context_menu+ - an array of actions (e.g. [:edit.action, "-", :del.action] - see the Actions section) or +false+ to disable the context menu
     # * +enable_rows_reordering+ - (defaults to false) enable reordering of rows with drag-n-drop; underlying model (specified in +model+) must implement "acts_as_list"-compatible functionality
     # * +enable_pagination+ - (defaults to true) enable pagination
     # * +rows_per_page+ - (defaults to 30) number of rows per page (ignored when +enable_pagination+ is set to +false+)
@@ -73,6 +74,8 @@ module Netzke
     #         order("users.first_name #{dir.to_s}, users.last_name #{dir.to_s}")
     #       }
     #     end
+    #
+    # * +format+ - the format to display data in case of date and datetime columns, e.g. 'Y-m-d g:i:s'.
     #
     # Besides these options, a column can receive any meaningful config option understood by Ext.grid.column.Column.
     #
@@ -240,8 +243,10 @@ module Netzke
 
       def get_default_association_values #:nodoc:
         columns.select{ |c| c[:name].index("__") && c[:default_value] }.each.inject({}) do |r,c|
-          assoc, assoc_method = assoc_and_assoc_method_for_attr(c)
-          assoc_instance = assoc.klass.find(c[:default_value])
+          assoc_name, assoc_method = c[:name].split '__'
+          assoc_class = data_adapter.class_for(assoc_name)
+          assoc_data_adapter = Netzke::Basepack::DataAdapters::AbstractAdapter.adapter_class(assoc_class).new(assoc_class)
+          assoc_instance = assoc_data_adapter.find_record c[:default_value]
           r.merge(c[:name] => assoc_instance.send(assoc_method))
         end
       end
