@@ -165,7 +165,7 @@ module Netzke
               params = component_session[:last_params]
             else
               # remember the last params
-              component_session[:last_params] = params
+              component_session[:last_params] = params.dup
             end
 
             params[:limit] = config[:rows_per_page] if config[:enable_pagination]
@@ -180,7 +180,7 @@ module Netzke
               params = component_session[:last_params]
             else
               # remember the last params
-              component_session[:last_params] = params
+              component_session[:last_params] = params.dup
             end
 
             params[:scope] = config[:scope] # note, params[:scope] becomes ActiveSupport::HashWithIndifferentAccess
