@@ -165,9 +165,10 @@ module Netzke
               params = component_session[:last_params]
             else
               # remember the last params
-              component_session[:last_params] = params.dup
+              component_session[:last_params] = params
             end
 
+            params = params.dup
             params[:limit] = config[:rows_per_page] if config[:enable_pagination]
             params[:scope] = config[:scope] # note, params[:scope] becomes ActiveSupport::HashWithIndifferentAccess
 
@@ -180,9 +181,10 @@ module Netzke
               params = component_session[:last_params]
             else
               # remember the last params
-              component_session[:last_params] = params.dup
+              component_session[:last_params] = params
             end
 
+            params = params.dup
             params[:scope] = config[:scope] # note, params[:scope] becomes ActiveSupport::HashWithIndifferentAccess
 
             data_adapter.count_records(params, columns)
