@@ -34,7 +34,7 @@ de:
           cancel: Abbrechen
           cancel_tooltip: Bearbeiten abbrechen
           apply: Anwenden
-          apply_tooltip: Änderungen speichern
+          apply_tooltip: "Änderungen speichern"
 
       search_panel:
         presets: Vorlagen
