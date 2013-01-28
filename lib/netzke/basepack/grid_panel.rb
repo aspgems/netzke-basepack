@@ -76,6 +76,7 @@ module Netzke
     #     end
     #
     # * +format+ - the format to display data in case of date and datetime columns, e.g. 'Y-m-d g:i:s'.
+    # * +blank_line+ - the blank line for one-to-many association columns, defaults to "---". Set to false to exclude completely.
     #
     # Besides these options, a column can receive any meaningful config option understood by Ext.grid.column.Column.
     #
@@ -125,6 +126,11 @@ module Netzke
     # * +extended_search_available+ - (defaults to true) include code for extended configurable search
     class GridPanel < Netzke::Base
       js_base_class "Ext.grid.Panel"
+
+      class_attribute :columns_attr
+
+      class_attribute :overridden_columns_attr
+      self.overridden_columns_attr = {}
 
       # Class-level configuration. These options directly influence the amount of generated
       # javascript code for this component's class. For example, if you don't want filters for the grid,
@@ -198,15 +204,14 @@ module Netzke
         base.class_eval do
           class << self
             def column(name, config = {})
-              columns = self.read_inheritable_attribute(:columns) || []
-              columns << config.merge(:name => name.to_s)
-              self.write_inheritable_attribute(:columns, columns)
+              columns = self.columns_attr || []
+              columns |= [config.merge(:name => name.to_s)]
+              self.columns_attr = columns
             end
 
             def override_column(name, config)
-              columns = self.read_inheritable_attribute(:overridden_columns) || {}
-              columns.merge!(name.to_sym => config)
-              self.write_inheritable_attribute(:overridden_columns, columns)
+              columns = self.overridden_columns_attr.dup
+              self.overridden_columns_attr = columns.merge(name.to_sym => config)
             end
           end
         end
@@ -214,10 +219,10 @@ module Netzke
 
       def configuration
         super.tap do |c|
-          c[:columns] ||= self.class.read_inheritable_attribute(:columns)
+          c[:columns] ||= self.columns_attr
 
           # user-passed :override_columns option should get deep_merged with the defaults
-          c[:override_columns] = (self.class.read_inheritable_attribute(:overridden_columns) || {}).deep_merge(c[:override_columns] || {})
+          c[:override_columns] = self.overridden_columns_attr.deep_merge(c[:override_columns] || {})
         end
       end
 

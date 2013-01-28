@@ -88,6 +88,7 @@ module Netzke
       js_mixin :form_panel
       js_include :comma_list_cbg
       js_include :n_radio_group, :readonly_mode
+      js_include :error_reader
       css_include :readonly_mode
 
       # WIP
@@ -106,7 +107,7 @@ module Netzke
 
       # A hash of record data including the meta field
       def js_record_data
-        record.netzke_hash(fields).merge(:_meta => meta_field).literalize_keys
+        record.netzke_hash(fields).merge(:meta => meta_field).literalize_keys
       end
 
       def record
