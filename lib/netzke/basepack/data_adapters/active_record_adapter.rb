@@ -54,7 +54,7 @@ module Netzke::Basepack::DataAdapters
           relation = relation.send(column[:sorting_scope].to_sym, dir.to_sym)
         else
           relation = if method.nil?
-            relation.order("#{@model_class.table_name}.#{assoc} #{dir}")
+            relation.order("#{assoc} #{dir}")
           else
             assoc = @model_class.reflect_on_association(assoc.to_sym)
             relation.joins(assoc.name).order("#{assoc.klass.table_name}.#{method} #{dir}")
